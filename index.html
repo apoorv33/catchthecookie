@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Catch the Mole!</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #f3f3f3, #cfe5fa);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-top: 20px;
+      font-size: 36px;
+      color: #2b579a;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    #game-board {
+      display: grid;
+      grid-template-columns: repeat(3, 120px);
+      grid-gap: 20px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    .hole {
+      width: 120px;
+      height: 120px;
+      background: #ddd;
+      border-radius: 50%;
+      position: relative;
+      cursor: pointer;
+    }
+    .mole {
+      background: url('https://i.imgur.com/tfFd5Lw.jpeg');
+      background-size: cover;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: none;
+      border-radius: 50%;
+    }
+    #score, #timer {
+      font-size: 24px;
+      margin: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎯 Catch the Mole!</h1>
+  <div id="score">Score: 0</div>
+  <div id="timer">Time: 30s</div>
+  <button onclick="startGame()">Start Game</button>
+
+  <div id="game-board">
+    <div class="hole"><div class="mole"></div></div>
+    <div class="hole"><div class="mole"></div></div>
+    <div class="hole"><div class="mole"></div></div>
+    <div class="hole"><div class="mole"></div></div>
+    <div class="hole"><div class="mole"></div></div>
+    <div class="hole"><div class="mole"></div></div>
+    <div class="hole"><div class="mole"></div></div>
+    <div class="hole"><div class="mole"></div></div>
+    <div class="hole"><div class="mole"></div></div>
+  </div>
+
+  <script>
+    let score = 0;
+    let timeLeft = 30;
+    let timerId;
+    let moleTimer;
+
+    const holes = document.querySelectorAll('.hole');
+    const moles = document.querySelectorAll('.mole');
+    const scoreDisplay = document.getElementById('score');
+    const timerDisplay = document.getElementById('timer');
+
+    function randomHole() {
+      moles.forEach(mole => mole.style.display = 'none');
+      const index = Math.floor(Math.random() * holes.length);
+      const mole = holes[index].querySelector('.mole');
+      mole.style.display = 'block';
+
+      mole.onclick = () => {
+        score++;
+        scoreDisplay.textContent = `Score: ${score}`;
+        mole.style.display = 'none';
+      };
+    }
+
+    function startGame() {
+      score = 0;
+      timeLeft = 30;
+      scoreDisplay.textContent = 'Score: 0';
+      timerDisplay.textContent = 'Time: 30s';
+
+      clearInterval(timerId);
+      clearInterval(moleTimer);
+
+      timerId = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `Time: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(timerId);
+          clearInterval(moleTimer);
+          moles.forEach(mole => mole.style.display = 'none');
+          alert('Game Over! Your final score is ' + score);
+        }
+      }, 1000);
+
+      moleTimer = setInterval(randomHole, 700);
+    }
+  </script>
+
+</body>
+</html>
